@@ -1,0 +1,23 @@
+{
+  "skill_name": "user-context-harness",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "ok so i just got claude code installed by our IT guy and i have no idea what im doing. yesterday i asked it to write up notes from a meeting and it says it saved a file but i cannot find it anywhere. all my stuff is normally in downloads. i mostly want help with the monthly board report and sometimes drafting emails to vendors",
+      "expected_output": "Enters Onboarding Guide Mode. Detects OS, home directory, Python, and existing ~/.claude files without asking. Runs the intake over two or three messages in plain language, taking 'monthly board report' and 'vendor emails' as project names. Offers both home locations with full paths spelled out and recommends Documents. Shows the tree and the house rules before creating anything, asks for an explicit yes, then scaffolds (script or by hand), writes ~/.claude/CLAUDE.md, opens the folder on screen, fills PROGRESS.md, and closes with the one habit. Also offers to locate yesterday's meeting-notes file and list it as a candidate move rather than moving it.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "can you set up some kind of workspace so you remember things between sessions? i'm on a work laptop (locked down, can't install stuff) and i use you for planning my kitchen remodel and keeping track of my mom's medical appointments. the medical stuff is private.",
+      "expected_output": "Detects a managed machine from the prompt and does not offer Tier 2 or edit settings.json, saying why in one sentence. Flags the privacy answer: creates a private/ folder with a one-line README inside the medical project, adds the no-summarising rule, and if Documents is cloud-synced raises that and offers the user-folder location. Uses 'kitchen-remodel' and the person's own phrase for the medical project as folder names with aliases. Shows tree and rules, waits for yes, creates, opens the folder, ends with the habit.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "we set up that Claude Home folder in my Documents a couple weeks ago and it's been great. i've got a new thing now, i'm coaching my kid's soccer team and need help with schedules and parent emails. can you add that? also there are like 6 schedule PDFs sitting in my downloads from the league",
+      "expected_output": "Recognises a repeat visit: finds the existing home via ~/.claude/CLAUDE.md or the README, reads it, and skips the full intake, asking only what is missing (aliases for the new project). Adds one project folder from the templates and one README bullet without touching existing files (scaffolder reports SKIP for everything else). Lists the six PDFs by name with current location, proposed destination, and reason, waits for a yes to that list, moves only those, appends each to inbox/MOVED.md, and tells the person where the list is in plain words.",
+      "files": []
+    }
+  ]
+}
