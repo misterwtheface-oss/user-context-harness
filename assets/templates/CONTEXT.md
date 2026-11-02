@@ -7,7 +7,7 @@ One or two sentences in your own words. Edit freely.
 
 ## Where the files live
 {{PROJECT_SOURCES}}
-- Claude's work for this project: `{{HOME}}/projects/{{PROJECT}}/files/`
+- New files with no place above: `{{HOME}}/projects/{{PROJECT}}/files/`
 
 ## Read first
 1. `PROGRESS.md` in this folder: where things stand and what is still open

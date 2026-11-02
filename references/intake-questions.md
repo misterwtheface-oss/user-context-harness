@@ -11,12 +11,12 @@ Ask two or three per message, never all six at once. Let the person answer in th
 
 | What | How | Feeds |
 |---|---|---|
-| Operating system and home directory | shell, `$HOME` / `$env:USERPROFILE` | path style in every message, folder names |
+| OS, user folder, admin rights, package managers, installed tools | `python scripts/toolcheck.py` (one run) | install route, toolchain offer, path style |
 | Python available | `python --version`, then `py -3 --version` on Windows | whether the scaffolder runs, whether Tier 2 is offered |
 | Existing `~/.claude/CLAUDE.md` or `settings.json` | file exists | append vs create; backup before edit |
-| Existing home from an earlier visit | README mentioning this skill, CLAUDE.md naming a home | skip to what is missing |
-| Current working directory | `pwd` | if it is Downloads, Desktop, or home root, the problem statement is confirmed |
-| Cloud-synced Documents | path contains OneDrive, iCloud, Dropbox | warn once that the home will sync too; usually fine, sometimes unwanted |
+| Earlier visit | toolbox block or workspace path in `~/.claude/CLAUDE.md`, README mentioning this skill | skip to what is missing |
+| Current working directory | `pwd` | a repo means work already has a home; Downloads or Desktop confirms the lost-files problem |
+| Cloud-synced Documents | path contains OneDrive, iCloud, Dropbox | keep the workspace out of it by default (see workspace-layout) |
 
 ## The six questions
 
@@ -25,24 +25,31 @@ Handoff inputs covered: vocabulary (#3), bodies of work. The answers become the 
 "my team's weekly report" becomes `weekly-report`, not `reporting-pipeline`. Write both the folder name and the phrase
 they used into `CONTEXT.md` under aliases, because the phrase is what they will type next session.
 
+Listen for the kind of work too: code (which languages), spreadsheets and Word documents, data, cloud (Azure, AWS),
+containers. That picks the role tools and decides whether `gh` and `pandoc` are worth offering (`toolcheck.py --roles`).
+If it is unclear, ask one follow-up: "Is that mostly code, documents, or data?"
+
 If they name only one thing, create one project. Do not pad the tree with "example" projects; empty folders are clutter to
 someone who did not ask for them.
 
 ### 2. "Where do the files for that live right now?"
 Handoff input: context inventory (#4). Expect Downloads, Desktop, email attachments, a shared drive, a phone. Record each
 place. These are candidate sources for per-file moves later, and for the inbox habit. If a place is a shared drive or
-email, the file stays there and `CONTEXT.md` simply points to it; the home is a map, not a copy.
+email, the file stays there and `CONTEXT.md` simply points to it; the workspace is a map, not a copy. A repo path is
+recorded the same way: Claude works in the repo, the notes stay in the workspace.
 
 ### 3. "Is this your only computer? Is it a work machine with rules about what you can install?"
-Handoff inputs: session topology (#1), harness policy (#8). One personal machine means absolute paths are fine and Tier 2
-is possible. A managed work machine means: do not offer Tier 2, do not edit `settings.json`, keep everything to files and
-CLAUDE.md, and say why in one sentence. Two machines means the home should sit in a synced folder if they have one, and
+Handoff inputs: session topology (#1), harness policy (#8). The tool check already knows admin rights and package
+managers; this question adds what the company allows, which the machine cannot tell you. One personal machine means
+absolute paths are fine and Tier 2 is possible. A managed work machine still gets tools: through the no-admin route if
+installing is permitted, or as an IT request list if it is not (`references/toolchain.md`). What it does not get is Tier 2
+or edits to a policy-controlled `settings.json`; say why in one sentence. Two machines means the workspace should sit in a synced folder if they have one, and
 `CLAUDE.md` should avoid machine-specific paths where it can.
 
 ### 4. "Is any of this private or confidential? Client data, finances, health, other people's information?"
 Handoff input: boundaries (#7). A yes creates a `private/` folder inside the relevant project with a one-line README
 saying Claude reads it only when asked, and adds a house rule not to summarise its contents into other documents. If the
-home is in a cloud-synced folder and they say yes, raise that in the same breath and offer the user-folder location
+workspace is in a cloud-synced folder and they say yes, raise that in the same breath and offer the user-folder location
 instead.
 
 ### 5. "When you come back tomorrow, what would you want Claude to already know?"

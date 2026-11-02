@@ -1,6 +1,7 @@
-# Claude Home
+# Claude workspace
 
-This is where everything you do with Claude lives. To get here: {{HOME_CLICK_PATH}}.
+This is the map of everything you do with Claude: one folder per project, saying where its files live and where things
+stand. To get here: {{HOME_CLICK_PATH}}.
 
 ```
 {{HOME}}
@@ -14,7 +15,7 @@ click away, like Downloads.
 - **inbox/** : drop anything here for Claude to look at. `MOVED.md` inside it lists every file Claude has moved in from
   somewhere else, with where it came from.
 - **projects/** : one folder per thing you are working on. Each has `CONTEXT.md` (what it is, where its files are) and
-  `PROGRESS.md` (where things stand), plus a `files/` folder for the work itself.
+  `PROGRESS.md` (where things stand), plus a `files/` folder for work that has no other home.
 - **archive/** : finished projects. Nothing is deleted; it comes here.
 - **CLAUDE.md** : the rules Claude follows while working in this folder. You can read and edit it.
 

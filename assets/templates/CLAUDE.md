@@ -10,8 +10,8 @@ In words: {{HOME_CLICK_PATH}}.
 
 - When I name a project, open its `CONTEXT.md` and then its `PROGRESS.md` inside `{{HOME}}/projects/` before doing
   anything else. The project folders and the phrases I use for them are listed in the README there.
-- Every file you create goes inside that project's `files/` folder, never in Downloads, Desktop, or wherever Claude Code
-  happened to start. If no project fits, put it in `{{HOME}}/inbox/` and tell me.
+- Work where the project's `CONTEXT.md` says its files live (a repo, a shared folder). Anything new that has no such
+  place goes in that project's `files/` folder, never in Downloads, Desktop, or wherever Claude Code happened to start. If no project fits, put it in `{{HOME}}/inbox/` and tell me.
 - Whenever you save or move a file, tell me where it is in plain words (which folders to click through), and give the
   full path too.
 - Never move, rename, or delete a file I already had without first showing me a list of exactly what would move and

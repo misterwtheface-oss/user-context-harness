@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Create (or extend) a Claude Home workspace from the templates in ../assets/templates.
+"""Create (or extend) a Claude workspace from the templates in ../assets/templates.
 
 Stdlib only. Never overwrites: an existing file or folder is reported as SKIP and left alone.
 Everything created is appended to <home>/.setup-log.json so a setup can be undone precisely.
 
 Usage
-  python scaffold_workspace.py --home "C:/Users/sam/Documents/Claude Home" \
+  python scaffold_workspace.py --home "C:/Users/sam/claude_workspace" \
       --project "weekly-report:Weekly Report:the Monday numbers,weekly spreadsheet" \
       --project "kitchen-remodel:Kitchen Remodel:the kitchen,remodel" \
       --source "weekly-report=Emailed every Monday as an .xlsx attachment" \
@@ -40,7 +40,7 @@ USER_SECTION_TITLE = "# House rules for Claude"
 
 
 def click_path(home: Path) -> str:
-    """'C:/Users/sam/Documents/Claude Home' -> 'your user folder, then Documents, then Claude Home'."""
+    """'C:/Users/sam/claude_workspace' -> 'your user folder, then claude_workspace'."""
     try:
         rel = home.relative_to(Path.home()).parts
     except ValueError:
@@ -160,7 +160,7 @@ def main():
     for d in ("inbox", "projects", "archive"):
         sc.mkdir(home / d)
     sc.write(home / "inbox" / "MOVED.md",
-             "# Files moved into Claude Home\n\nDate, file, where it came from, where it went. Newest at the bottom.\n")
+             "# Files moved into this workspace\n\nDate, file, where it came from, where it went. Newest at the bottom.\n")
     sc.write(home / "CLAUDE.md", fill((TEMPLATES / "HOME_CLAUDE.md").read_text(encoding="utf-8"), base))
 
     # projects

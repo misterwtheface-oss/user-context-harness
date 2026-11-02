@@ -4,29 +4,39 @@ The person this skill serves is competent. They run meetings, close deals, raise
 never needed to think about where a file lives beyond "I saved it" and "it's in Downloads". Every instruction below
 follows from one fact: a path is a sentence in a language they do not read yet.
 
+## Calibrate first
+
+Not everyone is new to computers. Someone on a fresh work laptop who writes code already knows folders; what they lack is
+the toolchain and the house rules. Read the first message: if they use words like repo, terminal, PATH or a language name,
+give them the tool list with versions and the commands, skip click paths and the on-screen folder opening, and keep the
+pace brisk. Everything below is for the newcomer; use as much of it as the person needs.
+
+For a newcomer, tools get the same treatment as folders: name the tool and say in one sentence what it lets Claude do for
+them ("ripgrep lets me search all your files in a blink"). Never show the install commands unless asked.
+
 ## Describe every location twice
 
 Once as a full path in a code block, because it is exact and clickable in Claude Code:
 
 ```
-C:\Users\sam\Documents\Claude Home\projects\weekly-report\files
+C:\Users\sam\claude_workspace\projects\weekly-report\files
 ```
 
 Once as a click path in words, because that is how they will actually get there:
 
-"Open Documents, then the folder called Claude Home, then projects, then weekly-report, then files."
+"Open your user folder, then claude_workspace, then projects, then weekly-report, then files."
 
 Never describe a location with only a relative path, a tilde, or `cd`. `~/claude_workspace` means nothing to them, and
 `../` is a riddle.
 
 ## Open the folder on screen at the moment it matters
 
-After creating the home, open it in their file browser and ask them to confirm they see it. Windows: `explorer.exe "<path>"`.
+After creating the workspace, open it in their file browser and ask them to confirm they see it. Windows: `explorer.exe "<path>"`.
 Mac: `open "<path>"`. Linux: `xdg-open "<path>"`. A folder they have seen is a folder that exists to them; a path in chat
-is not. Do this once for the home and once for the first project. Do not do it for every file.
+is not. Do this once for the workspace and once for the first project. Do not do it for every file.
 
 Follow it with the pin: on Windows, right-click the folder and choose "Pin to Quick access"; on Mac, drag it into the
-Finder sidebar. Pinning is the single highest-leverage thing in the session because it makes the home as reachable as
+Finder sidebar. Pinning is the single highest-leverage thing in the session because it makes the workspace as reachable as
 Downloads.
 
 ## One idea per message, two or three questions at most
@@ -82,7 +92,7 @@ is what lets them trust the next move.
 ## Do not fix what they did not ask about
 
 Downloads with nine hundred files is not the problem being solved. Desktop covered in screenshots is not either. The
-home is additive. If they ask for help tidying later, that is a different conversation with its own listing-and-yes
+workspace is additive. If they ask for help tidying later, that is a different conversation with its own listing-and-yes
 cycle.
 
 ## Close with the habit, not the architecture

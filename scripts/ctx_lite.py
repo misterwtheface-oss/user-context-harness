@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Tier 2 prompt hook for a Claude Home workspace. Advisory only; never blocks, never raises.
+"""Tier 2 prompt hook for a Claude workspace. Advisory only; never blocks, never raises.
 
 Installed at <home>/tools/ctx_lite.py and wired to Claude Code's UserPromptSubmit hook. Reads the hook JSON on stdin,
 finds a project under <home>/projects whose folder name or CONTEXT.md aliases appear in the prompt, and prints a short

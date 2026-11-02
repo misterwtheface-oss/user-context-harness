@@ -8,7 +8,7 @@ handoff's "minimal viable version" (registry, resolve, brief, prompt hook), with
 itself so there is nothing extra to maintain.
 
 It is advisory only. It never blocks a turn, never gates a stop, never logs the person's prompts anywhere but a per-session
-state file inside the home. Those are the handoff's post-flight and gap-log ideas, and they are wrong for someone in their
+state file inside the workspace. Those are the handoff's post-flight and gap-log ideas, and they are wrong for someone in their
 first week.
 
 ## Offer it only when all of these hold
@@ -16,7 +16,7 @@ first week.
 - Python 3 runs from the shell (`python --version` or `py -3 --version` on Windows)
 - The machine is theirs (intake question 3), not a managed work laptop
 - They answered "check things automatically" to intake question 6, after the one-paragraph explanation
-- Tier 1 is already created and they have seen the home folder on screen
+- Tier 1 is already created and the toolbox block is written
 
 Otherwise skip this file entirely and do not mention hooks. It can be added in any later session.
 
@@ -37,7 +37,7 @@ Otherwise skip this file entirely and do not mention hooks. It can be added in a
         "hooks": [
           {
             "type": "command",
-            "command": "python \"C:/Users/sam/Documents/Claude Home/tools/ctx_lite.py\""
+            "command": "python \"C:/Users/sam/claude_workspace/tools/ctx_lite.py\""
           }
         ]
       }
