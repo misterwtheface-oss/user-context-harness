@@ -54,3 +54,7 @@ Python 3 (stdlib only) runs the scripts; on a bare machine the skill installs Py
 
 Developed in [misterwtheface-oss/skill-vault](https://github.com/misterwtheface-oss/skill-vault) and published here with
 `git subtree`; changes land there first.
+
+## License
+
+MIT. See [LICENSE](LICENSE): use, change and share it freely; keep the copyright notice; no warranty.
