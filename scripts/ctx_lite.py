@@ -6,6 +6,10 @@ finds a project under <home>/projects whose folder name or CONTEXT.md aliases ap
 brief (path, read order, open bullets from PROGRESS.md) once per project per session. Prints nothing when no project
 matches, when the project was already briefed this session, or on any error. Exit code is always 0.
 
+Skill vault (optional): skills kept in <home>/skill_vault/<skill>/SKILL.md are not loaded by Claude Code at startup. When a
+prompt names a vaulted skill or enough of its `keywords:` (frontmatter), the hook prints a pointer to that SKILL.md, once
+per skill per session, at most MAX_SKILLS per prompt. A keyword hit scores its word count; the threshold is SKILL_THRESHOLD.
+
 Test by hand:
   echo '{"session_id":"t1","prompt":"lets do the weekly report"}' | python ctx_lite.py
 """
@@ -17,6 +21,8 @@ from pathlib import Path
 CAP_BYTES = 3 * 1024          # brief stays small so it never crowds the prompt
 MAX_BULLETS = 12
 STATE_HEADINGS = ("waiting on you", "open items")
+SKILL_THRESHOLD = 2       # one two-word phrase, or two single words, or the skill name
+MAX_SKILLS = 3
 
 if sys.platform == "win32":
     try:
@@ -55,6 +61,75 @@ def state_bullets(progress: Path) -> list:
     return out
 
 
+def phrase_in(phrase: str, prompt: str) -> bool:
+    body = re.escape(phrase.lower()).replace(" ", r"[\s_-]+")
+    return bool(phrase) and re.search(r"(?<![a-z0-9])" + body + r"(?![a-z0-9])", prompt) is not None
+
+
+def skill_frontmatter(path: Path) -> dict:
+    fm = {}
+    try:
+        lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
+    except OSError:
+        return fm
+    if not lines or lines[0].strip() != "---":
+        return fm
+    for line in lines[1:]:
+        if line.strip() == "---":
+            break
+        if ":" in line and not line.startswith(" "):
+            k, v = line.split(":", 1)
+            fm[k.strip().lower()] = v.strip().strip('"\'')
+    return fm
+
+
+def skill_hits(home: Path, prompt: str, shown: list) -> list:
+    vault = home / "skill_vault"
+    hits = []
+    if not vault.is_dir():
+        return hits
+    for sk in sorted(vault.glob("*/SKILL.md")):
+        fm = skill_frontmatter(sk)
+        name = fm.get("name") or sk.parent.name
+        if name in shown:
+            continue
+        kws = [k.strip().strip('"\'') for k in fm.get("keywords", "").strip("[]").split(",") if k.strip()]
+        score = sum(max(1, len(k.split())) for k in kws if phrase_in(k, prompt))
+        if phrase_in(name, prompt) or phrase_in(name.replace("-", " "), prompt):
+            score = max(score, SKILL_THRESHOLD)
+        if score >= SKILL_THRESHOLD:
+            desc = re.split(r"(?<=[.!?])\s", fm.get("description", ""), maxsplit=1)[0][:160]
+            hits.append((score, name, sk.as_posix(), desc))
+    hits.sort(key=lambda h: (-h[0], h[1]))
+    return hits[:MAX_SKILLS]
+
+
+def project_brief(home: Path, prompt: str, briefed: list):
+    projects = home / "projects"
+    if not projects.is_dir():
+        return None, None
+    best, best_len = None, 0
+    for pdir in sorted(projects.iterdir()):
+        if not pdir.is_dir():
+            continue
+        names = [pdir.name, pdir.name.replace("-", " ")] + read_aliases(pdir / "CONTEXT.md")
+        for n in names:
+            n_l = n.lower()
+            if n_l and re.search(r"(?<![a-z0-9])" + re.escape(n_l) + r"(?![a-z0-9])", prompt) and len(n_l) > best_len:
+                best, best_len = pdir, len(n_l)
+    if best is None or best.name in briefed:
+        return None, None
+    lines = [f"[ctx-lite] {best.name}",
+             f"project: {best.as_posix()}",
+             f"read first: {(best / 'CONTEXT.md').as_posix()} then {(best / 'PROGRESS.md').as_posix()}"]
+    bullets = state_bullets(best / "PROGRESS.md")
+    text = "\n".join(lines + bullets)
+    while len(text.encode("utf-8")) > CAP_BYTES and bullets:
+        bullets.pop()
+        text = "\n".join(lines + bullets + ["(more in PROGRESS.md)"])
+    return best.name, text
+
+
 def main():
     try:
         payload = json.loads(sys.stdin.read() or "{}")
@@ -66,46 +141,32 @@ def main():
         return
 
     home = Path(__file__).resolve().parent.parent      # tools/ sits directly under the home
-    projects = home / "projects"
-    if not projects.is_dir():
-        return
-
-    best, best_len = None, 0
-    for pdir in sorted(projects.iterdir()):
-        if not pdir.is_dir():
-            continue
-        names = [pdir.name, pdir.name.replace("-", " ")] + read_aliases(pdir / "CONTEXT.md")
-        for n in names:
-            n_l = n.lower()
-            if n_l and re.search(r"(?<![a-z0-9])" + re.escape(n_l) + r"(?![a-z0-9])", prompt) and len(n_l) > best_len:
-                best, best_len = pdir, len(n_l)
-    if best is None:
-        return
-
     state_dir = home / ".state"
     state_file = state_dir / f"{sid}.json"
-    briefed = []
+    state = {}
     try:
         if state_file.exists():
-            briefed = json.loads(state_file.read_text(encoding="utf-8")).get("briefed", [])
+            state = json.loads(state_file.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError):
-        briefed = []
-    if best.name in briefed:
+        state = {}
+    briefed, shown = state.get("briefed", []), state.get("skills_shown", [])
+
+    out = []
+    name, text = project_brief(home, prompt, briefed)
+    if name:
+        out.append(text)
+        briefed.append(name)
+    hits = skill_hits(home, prompt, shown)
+    if hits:
+        out.append("[ctx-lite] skill vault match (not loaded at startup; read the SKILL.md first and follow it):")
+        out += [f"- {n} (score {s}): {p} - {d}" for s, n, p, d in hits]
+        shown += [n for _, n, _, _ in hits]
+    if not out:
         return
-
-    lines = [f"[ctx-lite] {best.name}",
-             f"project: {best.as_posix()}",
-             f"read first: {(best / 'CONTEXT.md').as_posix()} then {(best / 'PROGRESS.md').as_posix()}"]
-    bullets = state_bullets(best / "PROGRESS.md")
-    text = "\n".join(lines + bullets)
-    while len(text.encode("utf-8")) > CAP_BYTES and bullets:
-        bullets.pop()
-        text = "\n".join(lines + bullets + ["(more in PROGRESS.md)"])
-    print(text)
-
+    print("\n".join(out))
     try:
         state_dir.mkdir(exist_ok=True)
-        state_file.write_text(json.dumps({"briefed": briefed + [best.name]}), encoding="utf-8")
+        state_file.write_text(json.dumps({"briefed": briefed, "skills_shown": shown}), encoding="utf-8")
     except OSError:
         pass
 

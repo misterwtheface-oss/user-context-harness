@@ -41,7 +41,8 @@ claude_workspace/
   .setup-log.json      what the scaffolder created and when (for undo); hidden, not mentioned unless needed
 ```
 
-Tier 2 adds `tools/ctx_lite.py` and `.state/` at the top level. Neither appears in the README's main list; a one-line
+Tier 2 adds `tools/ctx_lite.py` and `.state/` at the top level; the skill vault adds `skill_vault/` (see
+`skill-vault.md`). Neither appears in the README's main list; a one-line
 "Automation" note at the end covers them.
 
 ## What goes where, and why

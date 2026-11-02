@@ -74,6 +74,12 @@ half-working hook; a confusing automation teaches them to distrust the whole set
 
 The home path is found from the script's own location (`tools/` is directly under the home), so the script has no config.
 
+## Skill routing
+
+The same script routes vaulted skills when `<home>/skill_vault/` exists: a skill whose name or enough of its `keywords:`
+appear in the prompt is printed as a pointer to its `SKILL.md`, once per session. Nothing to configure; see
+`skill-vault.md` for who should use it and how to set it up.
+
 ## Removal
 
 Delete the hook entry from `~/.claude/settings.json` (or restore the dated backup), delete `<home>/tools/` and

@@ -24,6 +24,12 @@
       "prompt": "new work laptop, windows, not admin. i write python and some terraform for azure, code is in an azure devops repo i cloned to C:\\Users\\pat\\source\\repos\\infra. set claude up so it's fast and remembers context.",
       "expected_output": "Calibrates to a developer: brisk, tool names with versions, commands available. Runs toolcheck.py --roles azure; reports what is present and missing. Uses the no-admin route (Scoop, or winget --scope user and switching a tool to Scoop if an admin prompt appears), installs after a yes, one tool at a time, recommends uv for Python. Asks for a new session, re-runs the check, writes the toolbox block. Offers the read-only permission allow list as a separate yes. Proposes C:\\Users\\pat\\claude_workspace with an 'infra' project whose CONTEXT.md points at the cloned repo; the code stays in the repo and no notes files are added inside it. Skips opening folders on screen.",
       "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "my company gave us a shared library of about 150 claude skills and i copied them all into ~/.claude/skills. sessions feel slow to start and claude keeps grabbing the wrong skill. can you clean this up?",
+      "expected_output": "Counts the installed skills and names the cause in plain words: every installed skill's name and description loads into every session. Checks Tier 2 prerequisites (Python, permission to edit settings.json); if hooks are not allowed, says the vault is not safe there and stops at trimming. Otherwise proposes a pinned / vaulted split with vaulting as the default, proposes a keywords line per vaulted skill in one table, waits for edits and a yes, moves folders to <workspace>/skill_vault/ with a MOVED.md log, installs or confirms the prompt hook, tests three skills surface on typical prompts and an unrelated prompt surfaces nothing, and tells the person to say 'use <skill name>' for a vaulted skill instead of a slash command.",
+      "files": []
     }
   ]
 }

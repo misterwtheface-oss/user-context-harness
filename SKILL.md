@@ -1,5 +1,6 @@
 ---
 name: user-context-harness
+keywords: [set up claude code, claude code setup, new to claude code, new laptop, work laptop, what should i install, install tools, toolchain, claude keeps forgetting, find the file you made, get organized, onboarding, too many skills, skill vault]
 description: "Sets a person up to work efficiently with Claude Code from their first session: checks the machine for the tools Claude works best with (git, Python, Node.js, ripgrep, jq, GitHub CLI, plus role tools) and installs the missing ones through a route their machine allows (no-admin routes on locked-down work laptops, an IT request list when nothing is allowed), tells Claude which tools exist, then adds user-level house rules, memory that survives between sessions, and a light per-project map that points at where their work already lives. Use this whenever someone is new to Claude Code or on a new or work machine, asks how to set up or what to install, says Claude is slow, keeps forgetting things, or cannot find files it made. Trigger even when they do not say setup, toolchain, workspace or onboarding."
 ---
 
@@ -27,6 +28,7 @@ Intent phrases that should activate this skill:
 - "what should I install for Claude" / "Claude is slow at searching" / "Claude keeps saying a command is not found"
 - "Claude keeps forgetting what we did last time" / "I can't find the file you made"
 - "help me get organized" / "set up my context"
+- "I have too many skills" / "Claude picks the wrong skill" / "my skills list is huge"
 - A first session on a machine where `toolcheck.py` reports essential tools missing
 
 ## Context Mode
@@ -50,7 +52,8 @@ Intent phrases that should activate this skill:
       newcomer wants plain words and click paths
 - [ ] Detect without asking: OS, user folder, current working directory, admin rights, package managers, and the tool
       state, all in one run of `python scripts/toolcheck.py` (or the one-liner in `references/toolchain.md` without Python).
-      Also check whether `~/.claude/CLAUDE.md` and `~/.claude/settings.json` exist
+      Also check whether `~/.claude/CLAUDE.md` and `~/.claude/settings.json` exist, and count installed skills
+      (`~/.claude/skills/*/SKILL.md` plus the project's `.claude/skills/`)
 - [ ] Look for a previous visit: a toolbox block or a workspace path in `~/.claude/CLAUDE.md`, or a README mentioning this
       skill. If found, read it and do only what is missing (often: re-run the tool check, add a project)
 - [ ] Run the intake from `references/intake-questions.md`: two or three questions per message, their words kept. Question
@@ -78,6 +81,9 @@ Intent phrases that should activate this skill:
 - [ ] If existing files came up, list candidate moves (file, where now, where to, why). Nothing moves without a yes to that
       list. Files inside a repo or shared drive are never moved
 - [ ] If the machine is theirs and Python works, describe Tier 2 in one paragraph and ask yes or no. Default is no
+- [ ] If more than about 25 skills are installed, or the person builds many skills or says the list is unmanageable, offer
+      the skill vault (`references/skill-vault.md`): skills move out of the startup list and are surfaced by keyword only
+      when a prompt needs them. It requires Tier 2. Skip it for a handful of skills
 - [ ] Ask: "Should I go ahead and create this?" and wait for an explicit yes
 
 ### Step 4: Execution
@@ -89,6 +95,7 @@ Only after confirmation:
       between its own markers and is refreshed only by `toolcheck.py`
 - [ ] Perform approved moves one list at a time, appending each to `<workspace>/inbox/MOVED.md`. Never delete
 - [ ] If Tier 2 was approved, follow `references/optional-hooks.md`, including the activation test and removal on failure
+- [ ] If the vault was approved, follow `references/skill-vault.md`: keywords first, then a listed move, then the routing test
 - [ ] For a newcomer, open the workspace on screen once (`explorer.exe`, `open`, `xdg-open`) and ask them to confirm they
       see it. A developer can skip this
 - [ ] Fill each project's `PROGRESS.md` with what was decided today, including which tools were installed
@@ -130,6 +137,7 @@ If something goes wrong:
 
 ## Related Workflows
 - [Toolchain](references/toolchain.md): tiers, install routes per machine, work-machine limits, the toolbox block
+- [Skill vault](references/skill-vault.md): for heavy skill users; keyword routing instead of a startup cost per skill
 - [Intake questions](references/intake-questions.md): the interview and how each answer changes the build
 - [Optional hooks](references/optional-hooks.md): Tier 2 install, activation test, removal
 
