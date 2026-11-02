@@ -94,7 +94,9 @@ def skill_hits(home: Path, prompt: str, shown: list) -> list:
         if name in shown:
             continue
         kws = [k.strip().strip('"\'') for k in fm.get("keywords", "").strip("[]").split(",") if k.strip()]
-        score = sum(max(1, len(k.split())) for k in kws if phrase_in(k, prompt))
+        score = sum(max(1, len(k.split())) for k in kws if not k.endswith("!") and phrase_in(k, prompt))
+        if any(phrase_in(k.rstrip("!"), prompt) for k in kws if k.endswith("!")):
+            score = max(score, SKILL_THRESHOLD)   # "word!" = strong keyword, enough on its own
         if phrase_in(name, prompt) or phrase_in(name.replace("-", " "), prompt):
             score = max(score, SKILL_THRESHOLD)
         if score >= SKILL_THRESHOLD:

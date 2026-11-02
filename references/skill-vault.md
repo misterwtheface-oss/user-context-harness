@@ -25,7 +25,8 @@ to read. Claude then reads that skill and follows it as usual.
 - **Vault**: a folder Claude Code does not scan, holding skill folders unchanged: `<workspace>/skill_vault/<skill>/SKILL.md`.
 - **Keywords**: one line added to each vaulted skill's frontmatter, in the person's words for the task:
   `keywords: [rotate api keys, key rotation, expired credentials]`. Claude Code never parses a vaulted skill, so the extra
-  field is safe. A keyword hit scores its word count; the skill name always counts as a full match.
+  field is safe. A keyword hit scores its word count; the skill name always counts as a full match. A distinctive
+  single word can be marked strong with a trailing `!` (`datamine!`) so it surfaces the skill on its own; use it sparingly.
 - **Routing**: the prompt hook (Tier 2's `ctx_lite.py`, or the full `ctx` kit's `skillroute.py`) scores each prompt. A
   skill that reaches the threshold (2: one two-word phrase, two single words, or the name) is printed as a pointer, at
   most three per prompt, each once per session.
